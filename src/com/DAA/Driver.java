@@ -33,7 +33,6 @@ public class Driver {
 		printBoard();
 
 		currentCombo = new int[numPeople];
-		bestCombo = new int[numPeople];
 
 		// The brains here
 		while (!done) {
@@ -60,14 +59,23 @@ public class Driver {
 	public static void compareCombos() {
 		int currentTotal = 0;
 		int pastTotal = 0;
-
-		for (int i = 0; i < numPeople; i++) {
-			currentTotal += currentCombo[i];
-			pastTotal += bestCombo[i];
+		
+		if(bestCombo == null){
+			bestCombo = new int[numPeople];
+			for(int i=0; i<numPeople; i++){
+				bestCombo[i]=currentCombo[i];
+			}
 		}
 
-		if (currentTotal > pastTotal) {
-			bestCombo = currentCombo;
+		for (int i = 0; i < numPeople; i++) {
+			currentTotal += board[i][currentCombo[i]];
+			pastTotal += board[i][bestCombo[i]];
+		}
+
+		if (currentTotal >= pastTotal) {
+			for(int i=0; i<numPeople; i++){
+				bestCombo[i]=currentCombo[i];
+			}
 		}
 
 	}
@@ -126,7 +134,7 @@ public class Driver {
 		// if we are trying to backup when we are on the first level at the last
 		// position,
 		// then we are done
-		if (jobsChosen == 1 && currentCombo[0] == numPeople - 1) {
+		if (jobsChosen == 1 && currentCombo[0] == numPeople) {
 			done = true;
 			return;
 		}
