@@ -6,6 +6,11 @@
  * Comment: I decided to this project in Eclipse so that I can upload it to Github to build a portfolio
  * there as well as practice using it. Also, I experimented using Eclipse's run configurations 
  * presetting the args parameter in main to have the data I need for each run.
+ * If you were minimizing the values (like for salary), then you can evaluate the current total after
+ * each level. If the current total is already higher then the best combo, then you know you can backup 
+ * and skip going deeper in the tree. If maximizing, you can something similar if you know the max productivity
+ * each person can have. You can calculate their max possible productivty if you were to continue in the tree
+ * and if that is lower than the best combo, you can backtrack and skip that section of the tree.
  * @author: Albert Rynkiewicz
  * @version: 2015.03.06
  */
@@ -26,6 +31,7 @@ public class Driver {
 	static int jobsChosen = 0;
 	static int bestCombo[];
 	static boolean done = false;
+	static int cost = 0;
 
 	public static void main(String[] args) {
 
@@ -49,7 +55,11 @@ public class Driver {
 			}
 		}
 		
-		System.out.println("The best productivity is: " + bestCombo[0] + bestCombo[1] + bestCombo[2]);
+		System.out.println("The best productivity is: " );
+		for(int i=0; i<numPeople;i++){
+			System.out.println("Person "+ i +" assigned job "+ bestCombo[i]);
+		}
+		System.out.println("Total cost: " + cost);
 	}
 
 	/*
@@ -66,7 +76,7 @@ public class Driver {
 				bestCombo[i]=currentCombo[i];
 			}
 		}
-
+		cost++;
 		for (int i = 0; i < numPeople; i++) {
 			currentTotal += board[i][currentCombo[i]];
 			pastTotal += board[i][bestCombo[i]];
@@ -138,17 +148,40 @@ public class Driver {
 			done = true;
 			return;
 		}
+		
 
+		
 		if (jobsChosen > 1) {
-			currentCombo[jobsChosen - 1] = 0;// reset last row
-			currentCombo[jobsChosen - 2]++;
+			currentCombo[jobsChosen-1] = 0;// reset last row
+			jobsChosen -- ;
+			
+			
+			do{
+				currentCombo[jobsChosen - 1]++;
+			}while(!checkRows() && currentCombo[jobsChosen - 1] < numPeople );
+			//jobsChosen++;
 		} else {
 			currentCombo[0]++;// increment top row
+			jobsChosen--;
 		}
 
-		jobsChosen--;
+		
 	}
-
+	/*
+	 * @param 
+	 * @returns true if previous values do not interfere with new incremented row
+	 * @returns false if there was a conflict
+	 */
+	public static boolean checkRows(){
+		
+		for(int i = 0; i<jobsChosen-1;i++){
+			if(currentCombo[i]==currentCombo[jobsChosen-1]){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/*
 	 * This method sets up and initialized the job board
 	 */
