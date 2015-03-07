@@ -54,12 +54,15 @@ public class Driver {
 				backUpLevel();
 			}
 		}
-		
-		System.out.println("The best productivity is: " );
-		for(int i=0; i<numPeople;i++){
-			System.out.println("Person "+ i +" assigned job "+ bestCombo[i]);
+		int total = 0;
+		System.out.println("The best productivity is: ");
+		for (int i = 0; i < numPeople; i++) {
+			total += board[i][bestCombo[i]];
+			System.out.println("Person " + i + " assigned job " + bestCombo[i]);
 		}
-		System.out.println("Total cost: " + cost);
+		System.out.println("Number of Job Assignments Explored: " + cost);
+		System.out.println("Best Job Assignmetn cost: " + total);
+
 	}
 
 	/*
@@ -69,11 +72,11 @@ public class Driver {
 	public static void compareCombos() {
 		int currentTotal = 0;
 		int pastTotal = 0;
-		
-		if(bestCombo == null){
+
+		if (bestCombo == null) {
 			bestCombo = new int[numPeople];
-			for(int i=0; i<numPeople; i++){
-				bestCombo[i]=currentCombo[i];
+			for (int i = 0; i < numPeople; i++) {
+				bestCombo[i] = currentCombo[i];
 			}
 		}
 		cost++;
@@ -83,8 +86,8 @@ public class Driver {
 		}
 
 		if (currentTotal >= pastTotal) {
-			for(int i=0; i<numPeople; i++){
-				bestCombo[i]=currentCombo[i];
+			for (int i = 0; i < numPeople; i++) {
+				bestCombo[i] = currentCombo[i];
 			}
 		}
 
@@ -102,8 +105,8 @@ public class Driver {
 
 		// if we the last chosen job is at the end of the row, we have to back
 		// up
-		if(jobsChosen != 0){
-			if (currentCombo[jobsChosen-1] == numPeople ) {
+		if (jobsChosen != 0) {
+			if (currentCombo[jobsChosen - 1] == numPeople) {
 				return false;
 			}
 		}
@@ -148,40 +151,40 @@ public class Driver {
 			done = true;
 			return;
 		}
-		
 
-		
 		if (jobsChosen > 1) {
-			currentCombo[jobsChosen-1] = 0;// reset last row
-			jobsChosen -- ;
-			
-			
-			do{
+			currentCombo[jobsChosen - 1] = 0;// reset last row
+			jobsChosen--;
+
+			do {
 				currentCombo[jobsChosen - 1]++;
-			}while(!checkRows() && currentCombo[jobsChosen - 1] < numPeople );
-			//jobsChosen++;
+			} while (!checkRows() && currentCombo[jobsChosen - 1] < numPeople);
+			// jobsChosen++;
 		} else {
 			currentCombo[0]++;// increment top row
 			jobsChosen--;
 		}
 
-		
 	}
+
 	/*
-	 * @param 
-	 * @returns true if previous values do not interfere with new incremented row
+	 * @param
+	 * 
+	 * @returns true if previous values do not interfere with new incremented
+	 * row
+	 * 
 	 * @returns false if there was a conflict
 	 */
-	public static boolean checkRows(){
-		
-		for(int i = 0; i<jobsChosen-1;i++){
-			if(currentCombo[i]==currentCombo[jobsChosen-1]){
+	public static boolean checkRows() {
+
+		for (int i = 0; i < jobsChosen - 1; i++) {
+			if (currentCombo[i] == currentCombo[jobsChosen - 1]) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	/*
 	 * This method sets up and initialized the job board
 	 */
